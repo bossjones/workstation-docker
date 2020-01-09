@@ -2,6 +2,9 @@ FROM golang:1.13.5-alpine
 
 # 1.13.5-alpine3.11, 1.13-alpine3.11, 1-alpine3.11, alpine3.11, 1.13.5-alpine, 1.13-alpine, 1-alpine, alpine
 
+# https://wiki.alpinelinux.org/wiki/How_to_get_regular_stuff_working
+# https://wiki.musl-libc.org/functional-differences-from-glibc.html
+
 LABEL maintainer "https://github.com/bossjones"
 
 RUN apk add --no-cache ca-certificates git python3 ctags tzdata bash neovim neovim-doc
@@ -46,27 +49,47 @@ COPY nvim/spell /root/.config/nvim/spell
 
 # https://github.com/pyenv/pyenv/wiki/Common-build-problems
 RUN apk add --no-cache \
+    # libressl2.7-libtls \
+    # mpfr3 \
+    build-base \
+    gcc \
+    abuild \
+    binutils \
+    binutils-doc \
+    gcc-doc \
+    cmake \
+    cmake-doc \
+    extra-cmake-modules \
+    extra-cmake-modules-doc \
+    ccache \
+    ccache-doc \
     bash \
+    bash-completion \
+    bash-doc \
     binutils \
     bzip2-dev \
     ca-certificates \
     coreutils \
-    dpkg-dev \
     dpkg \
-    expat-dev \
+    dpkg-dev \
     expat \
-    fontconfig-dev \
+    expat-dev \
+    findutils \
     fontconfig \
-    freetype-dev \
+    fontconfig-dev \
     freetype \
+    freetype-dev \
     gcc \
-    gdbm-dev \
     gdbm \
+    gdbm-dev \
     git \
     gmp \
+    grep \
     inputproto \
     isl \
     kbproto \
+    less \
+    less-doc \
     libacl \
     libatomic \
     libattr \
@@ -75,62 +98,81 @@ RUN apk add --no-cache \
     libc-dev \
     libcap \
     libcurl \
-    libffi-dev \
     libffi \
+    libffi-dev \
     libgcc \
     libgomp \
     libhistory \
-    libpng-dev \
     libpng \
+    libpng-dev \
     libpthread-stubs \
-    libressl-dev \
-    # libressl2.7-libtls \
     libressl \
+    libressl-dev \
     libssh2 \
     libstdc++ \
-    libx11-dev \
     libx11 \
-    libxau-dev \
+    libx11-dev \
     libxau \
-    libxcb-dev \
+    libxau-dev \
     libxcb \
-    libxdmcp-dev \
+    libxcb-dev \
     libxdmcp \
-    libxft-dev \
+    libxdmcp-dev \
     libxft \
-    libxrender-dev \
+    libxft-dev \
     libxrender \
+    libxrender-dev \
     linux-headers \
+    linux-pam \
     make \
+    man \
+    man-pages \
+    mdocml-apropos \
     mpc1 \
-    # mpfr3 \
     musl-dev \
     ncurses-dev \
     ncurses-libs \
-    ncurses-terminfo-base \
     ncurses-terminfo \
+    ncurses-terminfo-base \
     patch \
     pax-utils \
+    pciutils \
     pcre2 \
     perl \
     pkgconf \
-    readline-dev \
     readline \
+    readline-dev \
     renderproto \
+    shadow \
     sqlite-dev \
     sqlite-libs \
-    tcl-dev \
+    sudo \
     tcl \
-    tk-dev \
+    tcl-dev \
     tk \
+    tk-dev \
+    tree \
+    usbutils \
+    util-linux \
     xcb-proto \
     xextproto \
     xproto \
     xtrans \
+    xz \
     xz-dev \
     xz-libs \
-    xz \
+    mkfontdir \
+    terminus-font \
     zlib-dev
+
+# Install https://github.com/sgerrand/alpine-pkg-glibc
+RUN apk --no-cache add ca-certificates wget && \
+    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-2.30-r0.apk && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-bin-2.30-r0.apk && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-dev-2.30-r0.apk && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-i18n-2.30-r0.apk && \
+    apk add glibc-2.30-r0.apk glibc-bin-2.30-r0.apk glibc-dev-2.30-r0.apk glibc-i18n-2.30-r0.apk
 
 # Go get popular golang libs
 RUN echo "===> go get popular golang libs..." \
@@ -233,26 +275,26 @@ COPY bin/ /entrypoints
 
 RUN /entrypoints/install-fonts
 
-ARG HOME="/root"
-ARG PROFILE="$HOME/.profile"
-ARG PYENV_COMMIT="0aeeb6fdcbdd01dea879703ca628a5a08bcb0a84"
-ARG PYENV_ROOT="$HOME/.pyenv"
-
-# https://github.com/pyenv/pyenv#basic-github-checkout
-# The git option '--shallow-submodules' is not supported in this version.
-RUN git clone --recursive --shallow-submodules \
-        https://github.com/pyenv/pyenv.git \
-        $PYENV_ROOT
-
-# Enforce configured commit.
-RUN cd $PYENV_ROOT && \
-    git reset --hard $PYENV_COMMIT && \
-    cd $HOME
-
-# Convenient environment when ssh-ing into the container.
-RUN echo "export PYENV_ROOT=$PYENV_ROOT" >> $PROFILE
-RUN echo 'export PATH=$PYENV_ROOT/bin:$PATH' >> $PROFILE
-RUN echo 'eval "$(pyenv init -)"' >> $PROFILE
+# DISABLED: # ARG HOME="/root"
+# DISABLED: # ARG PROFILE="$HOME/.profile"
+# DISABLED: # ARG PYENV_COMMIT="0aeeb6fdcbdd01dea879703ca628a5a08bcb0a84"
+# DISABLED: # ARG PYENV_ROOT="$HOME/.pyenv"
+# DISABLED: #
+# DISABLED: # # https://github.com/pyenv/pyenv#basic-github-checkout
+# DISABLED: # # The git option '--shallow-submodules' is not supported in this version.
+# DISABLED: # RUN git clone --recursive --shallow-submodules \
+# DISABLED: #         https://github.com/pyenv/pyenv.git \
+# DISABLED: #         $PYENV_ROOT
+# DISABLED: #
+# DISABLED: # # Enforce configured commit.
+# DISABLED: # RUN cd $PYENV_ROOT && \
+# DISABLED: #     git reset --hard $PYENV_COMMIT && \
+# DISABLED: #     cd $HOME
+# DISABLED: #
+# DISABLED: # # Convenient environment when ssh-ing into the container.
+# DISABLED: # RUN echo "export PYENV_ROOT=$PYENV_ROOT" >> $PROFILE
+# DISABLED: # RUN echo 'export PATH=$PYENV_ROOT/bin:$PATH' >> $PROFILE
+# DISABLED: # RUN echo 'eval "$(pyenv init -)"' >> $PROFILE
 
 # ENTRYPOINT ["/bin/bash", "--login", "-i", "-c"]
 # CMD ["bash"]
@@ -260,14 +302,21 @@ RUN echo 'eval "$(pyenv init -)"' >> $PROFILE
 ARG RPI_BUILD=false
 ENV RPI_BUILD ${RPI_BUILD}
 
+RUN mkdir /usr/local/src
+
 RUN if [ "${RPI_BUILD}" = "false" ]; then \
     curl -L 'https://github.com/heppu/gkill/releases/download/v1.0.2/gkill-linux-amd64' > /usr/local/bin/gkill; \
     chmod +x /usr/local/bin/gkill; \
     curl -L 'https://github.com/rgburke/grv/releases/download/v0.3.2/grv_v0.3.2_linux64' > /usr/local/bin/grv; \
     chmod +x /usr/local/bin/grv; \
+    curl --silent -L 'https://github.com/simeji/jid/releases/download/v0.7.6/jid_linux_amd64.zip' > /usr/local/src/jid.zip; \
+    unzip /usr/local/src/jid.zip -d /usr/local/bin;  \
+    chmod +x /usr/local/bin/jid; \
     else \
         echo "skipping all adm builds ..."; \
     fi
+
+RUN git clone https://github.com/facebook/PathPicker.git /usr/local/src/PathPicker; cd /usr/local/src/PathPicker; ln -s "$(pwd)/fpp" /usr/local/bin/fpp; fpp --help
 
 RUN apk add --no-cache \
   ltrace \
@@ -289,6 +338,7 @@ RUN apk add --no-cache \
   ruby \
   curl \
   wget \
+  file \
   && export PIP_NO_CACHE_DIR=off \
   && export PIP_DISABLE_PIP_VERSION_CHECK=on \
   && pip3 install --upgrade pip wheel
@@ -364,6 +414,163 @@ LABEL org.label-schema.vendor="TonyDark Industries"
 LABEL org.label-schema.version=$BUILD_VERSION
 LABEL maintainer="jarvis@theblacktonystark.com"
 
+
+# ####################################
+# ENV LANG C.UTF-8
+# # ENV CI true
+# ENV PYENV_ROOT /home/${NON_ROOT_USER}/.pyenv
+# ENV PATH="${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}"
+
+# RUN curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash && \
+#     git clone --depth 1 https://github.com/pyenv/pyenv-virtualenvwrapper /home/${NON_ROOT_USER}/.pyenv/plugins/pyenv-virtualenvwrapper && \
+#     git clone --depth 1 https://github.com/pyenv/pyenv-pip-rehash /home/${NON_ROOT_USER}/.pyenv/plugins/pyenv-pip-rehash && \
+#     git clone --depth 1 https://github.com/pyenv/pyenv-pip-migrate /home/${NON_ROOT_USER}/.pyenv/plugins/pyenv-pip-migrate && \
+#     pyenv install 3.5.2
+
+# # ########################[EDITOR RELATED SETUP STUFF]################################
+
+# # # Install rbenv to manage ruby versions
+# RUN git clone --depth 1 https://github.com/rbenv/rbenv.git ~/.rbenv && \
+#     cd ~/.rbenv && src/configure && make -C src && \
+#     echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc && \
+#     echo 'eval "$(rbenv init -)"' >> ~/.bashrc && \
+#     git clone --depth 1 https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+
+##########################################################################################
+
+RUN GO111MODULE=on go get github.com/mikefarah/yq/v2
+
+# container user
+ARG CONTAINER_GID=501
+ARG CONTAINER_UID=501
+ARG CONTAINER_USER=developer
+
+# host ip address
+ARG HOST_IP
+
+# set container user as environment variable
+ENV CONTAINER_USER=${CONTAINER_USER}
+
+RUN apk add --no-cache --update \
+  bash \
+  build-base \
+  bzip2-dev \
+  ca-certificates \
+  curl \
+  git \
+  jq \
+  linux-headers \
+  ncurses-dev \
+  openssl \
+  openssl-dev \
+  patch \
+  readline-dev \
+  sqlite-dev \
+  tmux \
+  unzip \
+  vim \
+  zsh \
+    && \
+  rm -rf /var/cache/apk/*
+
+ENV PYENV_ROOT="/.pyenv" \
+    PATH="/.pyenv/bin:/.pyenv/shims:$PATH"
+
+RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash && \
+    git clone https://github.com/pyenv/pyenv-virtualenvwrapper ${PYENV_ROOT}/plugins/pyenv-virtualenvwrapper && \
+    git clone https://github.com/pyenv/pyenv-pip-migrate ${PYENV_ROOT}/plugins/pyenv-pip-migrate && \
+    git clone https://github.com/jawshooah/pyenv-default-packages ${PYENV_ROOT}/plugins/pyenv-default-packages
+
+COPY default-packages ${PYENV_ROOT}/default-packages
+
+ENV PYTHON_CONFIGURE_OPTS="--enable-shared"
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# ----------------------------------------------------------------------------------------------
+# https://github.com/alpinelinux/aports/pull/6980/files
+# https://bugs.alpinelinux.org/issues/10209
+# https://stackoverflow.com/questions/55475157/pam-authentication-failure-when-running-chpasswd-on-alpine-linux
+# FIXME: `PAM: Authentication failure` when running `chpasswd` on Alpine Linux
+# ----------------------------------------------------------------------------------------------
+# echo "auth     sufficient pam_rootok.so" | tee /etc/pam.d/chpasswd
+# echo "account  include    base-account" | tee -a /etc/pam.d/chpasswd
+# echo "password include    base-password" | tee -a /etc/pam.d/chpasswd
+# ----------------------------------------------------------------------------------------------
+
+# echo "auth		include		base-auth" | tee /etc/pam.d/login && \
+# echo "account		include		base-account" | tee -a /etc/pam.d/login && \
+# echo "password	include		base-password" | tee -a /etc/pam.d/login && \
+# echo "session		include		base-session" | tee -a /etc/pam.d/login && \
+
+RUN apk add --no-cache --update tree shadow sudo bash linux-pam && \
+    echo -e "\n\n\n" && \
+    cat /etc/pam.d/chpasswd && \
+    echo -e "BEFORE" && \
+    echo -e "\n\n\n" && \
+    ls -lta /etc/pam.d && \
+    echo -e "\n\n\n" && \
+    echo "auth     sufficient pam_rootok.so" > /etc/pam.d/chpasswd && \
+    echo "account  include    base-account" >> /etc/pam.d/chpasswd && \
+    echo "password include    base-password" >> /etc/pam.d/chpasswd && \
+    echo -e "\n\n\n" && \
+    echo -e "AFTER - chpasswd" && \
+    cat /etc/pam.d/chpasswd && \
+    echo -e "\n\n\n" && \
+    echo -e "BEFORE - login" && \
+    cat /etc/pam.d/login && \
+    echo "auth		include		base-auth" > /etc/pam.d/login && \
+    echo "account		include		base-account" >> /etc/pam.d/login && \
+    echo "password	include		base-password" >> /etc/pam.d/login && \
+    echo "session		include		base-session" >> /etc/pam.d/login && \
+    echo -e "AFTER - login" && \
+    cat /etc/pam.d/login && \
+    echo -e "\n\n\n" && \
+    echo -e "\n\n\n" && \
+    echo -e "BEFORE - useradd" && \
+    cat /etc/pam.d/useradd && \
+    sed -i "s,account		required	pam_permit.so,account		include		base-account,g" /etc/pam.d/useradd && \
+    sed -i "s,password	include		system-auth,password	include		base-password,g" /etc/pam.d/useradd && \
+    echo -e "AFTER - useradd" && \
+    cat /etc/pam.d/useradd && \
+    echo -e "\n\n\n" && \
+    \
+    if [ -z "`getent group $CONTAINER_GID`" ]; then \
+      addgroup -S -g $CONTAINER_GID $CONTAINER_USER; \
+    else \
+      groupmod -n $CONTAINER_USER `getent group $CONTAINER_GID | cut -d: -f1`; \
+    fi && \
+    if [ -z "`getent passwd $CONTAINER_UID`" ]; then \
+      adduser -S -h /home/${CONTAINER_USER} -u $CONTAINER_UID -G $CONTAINER_USER -s /bin/sh $CONTAINER_USER; \
+    else \
+      usermod -l $CONTAINER_USER -g $CONTAINER_GID -d /home/$CONTAINER_USER -m `getent passwd $CONTAINER_UID | cut -d: -f1`; \
+    fi && \
+    echo "${CONTAINER_USER} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$CONTAINER_USER && \
+    chmod 0440 /etc/sudoers.d/$CONTAINER_USER && \
+    mkdir /home/${CONTAINER_USER}/.ssh && \
+    chmod og-rwx /home/${CONTAINER_USER}/.ssh && \
+    echo 'export PATH="~/.local/bin:${PATH}"' >> /etc/profile.d/${CONTAINER_USER}.sh && \
+    echo 'export PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"' >> /etc/profile.d/${CONTAINER_USER}.sh && \
+    chown -R ${CONTAINER_USER}:${CONTAINER_USER} /home/${CONTAINER_USER}
+
+# COPY vagrant_insecure_key /home/${CONTAINER_USER}
+# COPY vagrant_insecure_key.pub /home/${CONTAINER_USER}
+# RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key > /home/${CONTAINER_USER}/.ssh/id_rsa
+# RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key.pub > /home/${CONTAINER_USER}/.ssh/id_rsa.pub
+
+COPY --chown=developer:developer python-versions.txt /
+RUN set -x; pyenv update && \
+    xargs -P 4 -n 1 pyenv install < /python-versions.txt && \
+    pyenv global $(pyenv versions --bare) && \
+    find $PYENV_ROOT/versions -type d '(' -name '__pycache__' -o -name 'test' -o -name 'tests' ')' -exec rm -rfv '{}' + && \
+    find $PYENV_ROOT/versions -type f '(' -name '*.py[co]' -o -name '*.exe' ')' -exec rm -fv '{}' + && \
+    mv -v -- /python-versions.txt $PYENV_ROOT/version && \
+    chown -R ${CONTAINER_USER}:${CONTAINER_USER} ${PYENV_ROOT}
+
+COPY pyenv-init.sh /pyenv-init.sh
+
+RUN find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
+
 # SOURCE: https://hub.docker.com/r/ljishen/my-vim/dockerfile
 # perl for Checkpatch (syntax checking for C)
 # gcc for syntax checking of c
@@ -380,3 +587,6 @@ LABEL maintainer="jarvis@theblacktonystark.com"
 #     /bin/sh -c /root/.vim/bundle/YouCompleteMe/install.py
 # libffi-dev and libssl-dev is required to build ansible-lint
 # shellcheck for syntax checking of sh
+
+# TODO: Search for docs/grep
+# apk search nginx | grep -- -doc
