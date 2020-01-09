@@ -1,0 +1,183 @@
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.005  000.005: --- NVIM STARTING ---
+000.449  000.444: locale set
+000.783  000.334: inits 1
+000.799  000.017: window checked
+000.803  000.004: parsing arguments
+000.952  000.149: expanding arguments
+000.996  000.044: inits 2
+001.655  000.659: init highlight
+001.702  000.047: waiting for UI
+002.509  000.806: done waiting for UI
+002.519  000.010: initialized screen early for UI
+005.195  002.137  002.137: sourcing /root/.local/share/nvim/site/autoload/plug.vim
+026.692  000.023  000.023: sourcing /root/.vim/plugged/neosnippet/ftdetect/neosnippet.vim
+026.814  000.024  000.024: sourcing /root/.vim/plugged/vimshell.vim/ftdetect/vimshrc.vim
+026.989  000.027  000.027: sourcing /root/.vim/plugged/vader.vim/ftdetect/vader.vim
+027.211  000.032  000.032: sourcing /root/.vim/plugged/vim-fugitive/ftdetect/fugitive.vim
+027.384  000.043  000.043: sourcing /root/.vim/plugged/plantuml-syntax/ftdetect/plantuml.vim
+027.503  000.038  000.038: sourcing /root/.vim/plugged/vim-toml/ftdetect/toml.vim
+027.640  000.047  000.047: sourcing /root/.vim/plugged/nginx.vim/ftdetect/nginx.vim
+027.776  000.059  000.059: sourcing /root/.vim/plugged/vim-fish/ftdetect/fish.vim
+027.866  000.020  000.020: sourcing /root/.vim/plugged/vim-pug/ftdetect/pug.vim
+028.276  000.322  000.322: sourcing /root/.vim/plugged/vim-go/ftdetect/gofiletype.vim
+028.451  000.049  000.049: sourcing /root/.vim/plugged/vim-coffee-script/ftdetect/coffee.vim
+028.512  000.031  000.031: sourcing /root/.vim/plugged/vim-coffee-script/ftdetect/vim-literate-coffeescript.vim
+028.620  000.030  000.030: sourcing /root/.vim/plugged/apiblueprint.vim/ftdetect/apiblueprint.vim
+028.713  000.016  000.016: sourcing /root/.vim/plugged/pgsql.vim/ftdetect/pgsql.vim
+028.847  000.053  000.053: sourcing /root/.vim/plugged/vim-markdown/ftdetect/markdown.vim
+028.939  000.017  000.017: sourcing /root/.vim/plugged/vim-thrift/ftdetect/thrift.vim
+029.123  012.001  011.169: sourcing /usr/share/nvim/runtime/filetype.vim
+029.714  000.041  000.041: sourcing /usr/share/nvim/runtime/ftplugin.vim
+030.369  000.051  000.051: sourcing /usr/share/nvim/runtime/indent.vim
+031.814  000.375  000.375: sourcing /usr/share/nvim/runtime/syntax/syncolor.vim
+031.981  001.020  000.645: sourcing /usr/share/nvim/runtime/syntax/synload.vim
+032.013  001.538  000.518: sourcing /usr/share/nvim/runtime/syntax/syntax.vim
+033.393  001.018  001.018: sourcing /usr/share/nvim/runtime/syntax/nosyntax.vim
+034.610  000.145  000.145: sourcing /usr/share/nvim/runtime/syntax/syncolor.vim
+034.759  000.800  000.654: sourcing /usr/share/nvim/runtime/syntax/synload.vim
+034.799  002.527  000.709: sourcing /usr/share/nvim/runtime/syntax/syntax.vim
+035.930  000.207  000.207: sourcing /usr/share/nvim/runtime/syntax/syncolor.vim
+039.080  000.322  000.322: sourcing /usr/share/nvim/runtime/syntax/syncolor.vim
+040.387  000.195  000.195: sourcing /usr/share/nvim/runtime/syntax/syncolor.vim
+045.894  009.062  008.546: sourcing /root/.vim/plugged/vim-colors-solarized/colors/solarized.vim
+047.385  044.480  016.916: sourcing /root/.config/nvim/init.vim
+047.393  000.395: sourcing vimrc file(s)
+048.126  000.147  000.147: sourcing /root/.vim/plugged/neocomplcache/plugin/neocomplcache/buffer_complete.vim
+048.245  000.056  000.056: sourcing /root/.vim/plugged/neocomplcache/plugin/neocomplcache/dictionary_complete.vim
+048.326  000.044  000.044: sourcing /root/.vim/plugged/neocomplcache/plugin/neocomplcache/include_complete.vim
+048.401  000.047  000.047: sourcing /root/.vim/plugged/neocomplcache/plugin/neocomplcache/syntax_complete.vim
+048.475  000.041  000.041: sourcing /root/.vim/plugged/neocomplcache/plugin/neocomplcache/tags_complete.vim
+048.880  000.378  000.378: sourcing /root/.vim/plugged/neocomplcache/plugin/neocomplcache.vim
+049.249  000.241  000.241: sourcing /root/.vim/plugged/tabular/plugin/Tabular.vim
+049.926  000.554  000.554: sourcing /root/.vim/plugged/vim-rhubarb/plugin/rhubarb.vim
+051.326  001.222  001.222: sourcing /root/.vim/plugged/vim-bookmarks/plugin/bookmark.vim
+051.971  000.245  000.245: sourcing /root/.vim/plugged/deoplete.nvim/autoload/deoplete.vim
+052.470  000.933  000.688: sourcing /root/.vim/plugged/deoplete.nvim/plugin/deoplete.vim
+052.853  000.204  000.204: sourcing /root/.vim/plugged/neosnippet/plugin/neosnippet.vim
+053.165  000.138  000.138: sourcing /root/.vim/plugged/vimproc.vim/plugin/vimproc.vim
+053.945  000.613  000.613: sourcing /root/.vim/plugged/vimshell.vim/plugin/vimshell.vim
+055.129  000.318  000.318: sourcing /root/.vim/plugged/vim-airline/autoload/airline/init.vim
+056.807  000.111  000.111: sourcing /root/.vim/plugged/vim-airline/autoload/airline/parts.vim
+058.359  000.250  000.250: sourcing /root/.vim/plugged/vim-airline/autoload/airline/util.vim
+058.513  004.337  003.657: sourcing /root/.vim/plugged/vim-airline/plugin/airline.vim
+058.728  000.067  000.067: sourcing /root/.vim/plugged/vim-airline-themes/plugin/airline-themes.vim
+059.193  000.339  000.339: sourcing /root/.vim/plugged/vim-tmux-navigator/plugin/tmux_navigator.vim
+059.833  000.206  000.206: sourcing /root/.vim/plugged/ctrlp.vim/autoload/ctrlp/mrufiles.vim
+060.018  000.703  000.497: sourcing /root/.vim/plugged/ctrlp.vim/plugin/ctrlp.vim
+066.463  006.305  006.305: sourcing /root/.vim/plugged/vim-easymotion/plugin/EasyMotion.vim
+067.297  000.639  000.639: sourcing /root/.vim/plugged/editorconfig-vim/plugin/editorconfig.vim
+067.578  000.108  000.108: sourcing /root/.vim/plugged/calendar.vim/plugin/calendar.vim
+068.381  000.682  000.682: sourcing /root/.fzf/plugin/fzf.vim
+069.506  000.956  000.956: sourcing /root/.vim/plugged/fzf.vim/plugin/fzf.vim
+069.675  000.030  000.030: sourcing /root/.vim/plugged/goyo.vim/plugin/goyo.vim
+069.840  000.052  000.052: sourcing /root/.vim/plugged/vader.vim/plugin/vader.vim
+071.086  001.072  001.072: sourcing /root/.vim/plugged/tagbar/plugin/tagbar.vim
+071.662  000.404  000.404: sourcing /root/.vim/plugged/vim-signify/plugin/signify.vim
+072.288  000.411  000.411: sourcing /root/.vim/plugged/ack.vim/plugin/ack.vim
+072.967  000.117  000.117: sourcing /root/.vim/plugged/neomake/autoload/neomake/setup.vim
+073.237  000.797  000.681: sourcing /root/.vim/plugged/neomake/plugin/neomake.vim
+073.499  000.114  000.114: sourcing /root/.vim/plugged/bclose.vim/plugin/bclose.vim
+073.650  000.026  000.026: sourcing /root/.vim/plugged/neoformat/plugin/neoformat.vim
+078.740  004.973  004.973: sourcing /root/.vim/plugged/nerdcommenter/plugin/NERD_commenter.vim
+079.956  000.202  000.202: sourcing /root/.vim/plugged/nerdtree/autoload/nerdtree.vim
+081.437  000.490  000.490: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/path.vim
+081.840  000.127  000.127: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/menu_controller.vim
+082.189  000.091  000.091: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/menu_item.vim
+082.539  000.099  000.099: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/key_map.vim
+083.022  000.229  000.229: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/bookmark.vim
+083.512  000.209  000.209: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/tree_file_node.vim
+084.196  000.417  000.417: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/tree_dir_node.vim
+084.639  000.181  000.181: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/opener.vim
+085.124  000.217  000.217: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/creator.vim
+085.441  000.050  000.050: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/flag_set.vim
+085.892  000.197  000.197: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/nerdtree.vim
+086.725  000.577  000.577: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/ui.vim
+087.012  000.035  000.035: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/event.vim
+087.356  000.086  000.086: sourcing /root/.vim/plugged/nerdtree/lib/nerdtree/notifier.vim
+088.638  001.012  001.012: sourcing /root/.vim/plugged/nerdtree/autoload/nerdtree/ui_glue.vim
+092.299  000.152  000.152: sourcing /root/.vim/plugged/nerdtree/nerdtree_plugin/exec_menuitem.vim
+094.328  000.914  000.914: sourcing /usr/share/nvim/runtime/autoload/provider/clipboard.vim
+094.803  002.466  001.551: sourcing /root/.vim/plugged/nerdtree/nerdtree_plugin/fs_menu.vim
+094.937  000.095  000.095: sourcing /root/.vim/plugged/nerdtree/nerdtree_plugin/vcs.vim
+095.646  000.500  000.500: sourcing /root/.vim/plugged/vim-devicons/nerdtree_plugin/webdevicons.vim
+096.123  017.231  009.798: sourcing /root/.vim/plugged/nerdtree/plugin/NERD_tree.vim
+096.629  000.380  000.380: sourcing /root/.vim/plugged/vim-delve/plugin/delve.vim
+097.259  000.498  000.498: sourcing /root/.vim/plugged/vim-multiple-cursors/plugin/multiple_cursors.vim
+099.132  001.755  001.755: sourcing /root/.vim/plugged/vim-fugitive/plugin/fugitive.vim
+099.814  000.503  000.503: sourcing /root/.vim/plugged/vim-surround/plugin/surround.vim
+100.973  000.461  000.461: sourcing /root/.vim/plugged/vimwiki/autoload/vimwiki/vars.vim
+102.074  000.068  000.068: sourcing /root/.vim/plugged/vimwiki/autoload/vimwiki/u.vim
+104.510  004.561  004.032: sourcing /root/.vim/plugged/vimwiki/plugin/vimwiki.vim
+105.891  000.189  000.189: sourcing /root/.vim/plugged/vim-airline/autoload/airline.vim
+107.793  000.036  000.036: sourcing /root/.vim/plugged/vim-devicons/autoload/devicons/plugins/ctrlp.vim
+107.858  003.139  002.913: sourcing /root/.vim/plugged/vim-devicons/plugin/webdevicons.vim
+108.975  000.505  000.505: sourcing /root/.vim/plugged/vim-go/autoload/go/config.vim
+110.112  000.380  000.380: sourcing /root/.vim/plugged/vim-go/autoload/go/util.vim
+110.153  002.104  001.219: sourcing /root/.vim/plugged/vim-go/plugin/go.vim
+110.446  000.092  000.092: sourcing /root/.vim/plugged/apiblueprint.vim/plugin/apiary.vim
+110.561  000.074  000.074: sourcing /root/.vim/plugged/apiblueprint.vim/plugin/apiblueprint.vim
+110.795  000.060  000.060: sourcing /root/.vim/plugged/deoplete-go/plugin/deoplete-go.vim
+111.627  000.225  000.225: sourcing /usr/share/nvim/runtime/plugin/gzip.vim
+111.713  000.021  000.021: sourcing /usr/share/nvim/runtime/plugin/health.vim
+111.859  000.111  000.111: sourcing /usr/share/nvim/runtime/plugin/man.vim
+113.183  000.338  000.338: sourcing /usr/share/nvim/runtime/pack/dist/opt/matchit/plugin/matchit.vim
+113.238  001.338  001.000: sourcing /usr/share/nvim/runtime/plugin/matchit.vim
+113.448  000.176  000.176: sourcing /usr/share/nvim/runtime/plugin/matchparen.vim
+114.077  000.586  000.586: sourcing /usr/share/nvim/runtime/plugin/netrwPlugin.vim
+115.513  000.243  000.243: sourcing /usr/share/nvim/runtime/autoload/remote/host.vim
+116.353  000.190  000.190: sourcing /usr/share/nvim/runtime/autoload/remote/define.vim
+116.526  002.079  001.646: sourcing /root/.local/share/nvim/rplugin.vim
+116.541  002.387  000.309: sourcing /usr/share/nvim/runtime/plugin/rplugin.vim
+116.944  000.312  000.312: sourcing /usr/share/nvim/runtime/plugin/shada.vim
+117.037  000.038  000.038: sourcing /usr/share/nvim/runtime/plugin/spellfile.vim
+117.407  000.326  000.326: sourcing /usr/share/nvim/runtime/plugin/tarPlugin.vim
+117.590  000.128  000.128: sourcing /usr/share/nvim/runtime/plugin/tohtml.vim
+117.662  000.028  000.028: sourcing /usr/share/nvim/runtime/plugin/tutor.vim
+117.990  000.287  000.287: sourcing /usr/share/nvim/runtime/plugin/zipPlugin.vim
+117.998  007.611: loading plugins
+118.106  000.108: loading packages
+118.780  000.252  000.252: sourcing /root/.vim/plugged/tabular/autoload/tabular.vim
+120.870  002.531  002.279: sourcing /root/.vim/plugged/tabular/after/plugin/TabularMaps.vim
+120.935  000.298: loading after plugins
+120.946  000.011: inits 3
+122.117  001.171: reading ShaDa
+122.953  000.357  000.357: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions.vim
+123.218  000.065  000.065: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/quickfix.vim
+123.479  000.045  000.045: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/netrw.vim
+123.990  000.075  000.075: sourcing /root/.vim/plugged/vim-airline/autoload/airline/section.vim
+124.443  000.202  000.202: sourcing /root/.vim/plugged/vim-airline/autoload/airline/highlighter.vim
+124.614  000.920  000.643: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/term.vim
+124.887  000.073  000.073: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/ctrlp.vim
+125.188  000.094  000.094: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/hunks.vim
+125.467  000.069  000.069: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/tagbar.vim
+125.720  000.039  000.039: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/bookmark.vim
+126.166  000.239  000.239: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/branch.vim
+126.463  000.059  000.059: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/fugitiveline.vim
+126.860  000.132  000.132: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/whitespace.vim
+127.356  000.054  000.054: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/neomake.vim
+127.889  000.107  000.107: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/wordcount.vim
+128.269  000.199  000.199: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/tabline.vim
+128.529  000.058  000.058: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/tabline/autoshow.vim
+128.974  000.103  000.103: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/tabline/tabs.vim
+129.399  000.174  000.174: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/tabline/buffers.vim
+129.823  000.040  000.040: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/keymap.vim
+137.853  000.063  000.063: sourcing /root/.vim/plugged/vim-airline/autoload/airline/themes.vim
+138.199  000.890  000.827: sourcing /root/.vim/plugged/vim-airline-themes/autoload/airline/themes/solarized.vim
+143.012  001.026  001.026: sourcing /root/.vim/plugged/vim-airline-themes/autoload/airline/themes/solarized.vim
+222.522  000.303  000.303: sourcing /root/.vim/plugged/vim-airline/autoload/airline/builder.vim
+223.725  000.205  000.205: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/default.vim
+318.465  191.096: opening buffers
+319.255  000.212  000.212: sourcing /root/.vim/plugged/vim-signify/autoload/sy.vim
+319.630  000.953: BufEnter autocommands
+319.635  000.005: editing files in windows
+320.213  000.235  000.235: sourcing /root/.vim/plugged/vim-airline/autoload/airline/extensions/tabline/buflist.vim
+320.764  000.250  000.250: sourcing /root/.vim/plugged/ctrlp.vim/autoload/ctrlp/utils.vim
+324.484  000.194  000.194: sourcing /root/.vim/plugged/neomake/autoload/neomake/core.vim
+333.706  010.510  010.316: sourcing /root/.vim/plugged/neomake/autoload/neomake.vim
+336.479  001.381  001.381: sourcing /root/.vim/plugged/neomake/autoload/neomake/utils.vim
+336.920  002.248  000.867: sourcing /root/.vim/plugged/neomake/autoload/neomake/compat.vim
+337.107  002.913  000.665: sourcing /root/.vim/plugged/neomake/autoload/neomake/log.vim
