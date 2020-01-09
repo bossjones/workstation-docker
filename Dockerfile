@@ -233,12 +233,10 @@ COPY bin/ /entrypoints
 
 RUN /entrypoints/install-fonts
 
-RUN curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | zsh
-
 ARG HOME="/root"
 ARG PROFILE="$HOME/.profile"
 ARG PYENV_COMMIT="0aeeb6fdcbdd01dea879703ca628a5a08bcb0a84"
-ARG PYENV_ROOT="$HOME/pyenv"
+ARG PYENV_ROOT="$HOME/.pyenv"
 
 # https://github.com/pyenv/pyenv#basic-github-checkout
 # The git option '--shallow-submodules' is not supported in this version.
@@ -289,36 +287,50 @@ RUN apk add --no-cache \
   python3-doc \
   python3-tests \
   ruby \
+  curl \
+  wget \
   && export PIP_NO_CACHE_DIR=off \
   && export PIP_DISABLE_PIP_VERSION_CHECK=on \
-  && pip3 install --upgrade pip wheel \
-  && pip3 install capstone unicorn keystone-engine ropper retdec-python \
-  && echo "===> Adding gef user..." \
-  && useradd -ms /bin/bash gef \
-  && echo "===> Install GEF..." \
-  && wget --progress=bar:force -O /home/gef/.gdbinit-gef.py https://github.com/hugsy/gef/raw/master/gef.py \
-  && chmod o+r /home/gef/.gdbinit-gef.py \
-  && echo "===> Clean up unnecessary files..."
+  && pip3 install --upgrade pip wheel
+  # && pip3 install capstone unicorn keystone-engine ropper retdec-python \
+  # && pip3 install capstone unicorn ropper retdec-python \
+  # && echo "===> Adding gef user..." \
+  # && useradd -ms /bin/bash gef \
+  # && echo "===> Install GEF..." \
+  # && wget --progress=bar:force -O /home/gef/.gdbinit-gef.py https://github.com/hugsy/gef/raw/master/gef.py \
+  # && chmod o+r /home/gef/.gdbinit-gef.py \
+  # && echo "===> Clean up unnecessary files..."
 
-RUN ln -sf /usr/bin/clang /usr/bin/cc
-RUN ln -sf /usr/bin/clang++ /usr/bin/c++
+# hadolint ignore=DL3013
+RUN pip3 install --upgrade \
+  jsbeautifier \
+  flake8 \
+  mypy \
+  bandit \
+  pylint \
+  pycodestyle \
+  pydocstyle \
+  ansible-lint
 
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 10
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 10
-RUN update-alternatives --install /usr/bin/ld ld /usr/bin/lld 10
+# RUN ln -sf /usr/bin/clang /usr/bin/cc
+# RUN ln -sf /usr/bin/clang++ /usr/bin/c++
 
-RUN update-alternatives --auto cc
-RUN update-alternatives --auto c++
-RUN update-alternatives --auto ld
+# RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 10
+# RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 10
+# RUN update-alternatives --install /usr/bin/ld ld /usr/bin/lld 10
 
-RUN update-alternatives --display cc
-RUN update-alternatives --display c++
-RUN update-alternatives --display ld
+# RUN update-alternatives --auto cc
+# RUN update-alternatives --auto c++
+# RUN update-alternatives --auto ld
 
-RUN ls -l /usr/bin/cc /usr/bin/c++
+# RUN update-alternatives --display cc
+# RUN update-alternatives --display c++
+# RUN update-alternatives --display ld
 
-RUN cc --version
-RUN c++ --version
+# RUN ls -l /usr/bin/cc /usr/bin/c++
+
+# RUN cc --version
+# RUN c++ --version
 
 # Install nvim plugins
 RUN set -x; apk add --no-cache -t .build-deps build-base python3-dev \
@@ -331,6 +343,11 @@ RUN set -x; apk add --no-cache -t .build-deps build-base python3-dev \
 
 # RUN git clone https://github.com/junegunn/fzf.git -b 0.18.0 ~/.fzf
 RUN cd ~/.fzf; ./install --all
+
+ENV SHELL="zsh"
+RUN /bin/zsh -l -c "curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash"
+
+RUN go get -u github.com/simeji/jid/cmd/jid
 
 ENTRYPOINT ["tmux"]
 
@@ -346,3 +363,20 @@ LABEL org.label-schema.vcs-ref=$VCS_REF
 LABEL org.label-schema.vendor="TonyDark Industries"
 LABEL org.label-schema.version=$BUILD_VERSION
 LABEL maintainer="jarvis@theblacktonystark.com"
+
+# SOURCE: https://hub.docker.com/r/ljishen/my-vim/dockerfile
+# perl for Checkpatch (syntax checking for C)
+# gcc for syntax checking of c
+# g++ for syntax checking of c++
+# python3-pip, python3-setuptools and python3-wheel
+#    are used for installing/building python packages (e.g. jsbeautifier, flake8)
+# cppcheck for syntax checking of c and c++
+# exuberant-ctags for Vim plugin Tagbar (https://github.com/majutsushi/tagbar#dependencies)
+# clang is for plugin Vim plugin YCM-Generator (https://github.com/rdnetto/YCM-Generator)
+# clang-format is used by plugin google/vim-codefmt
+# python3-dev is required to build typed-ast, which is required by jsbeautifier
+# python-dev, cmake and build-essential are used for compiling YouCompleteMe(YCM)
+#     with semantic support in the following command:
+#     /bin/sh -c /root/.vim/bundle/YouCompleteMe/install.py
+# libffi-dev and libssl-dev is required to build ansible-lint
+# shellcheck for syntax checking of sh

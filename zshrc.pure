@@ -104,6 +104,9 @@ antigen bundle zdharma/fast-syntax-highlighting
 antigen bundle joel-porquet/zsh-dircolors-solarized
 antigen bundle mollifier/anyframe
 antigen bundle history
+antigen bundle fd
+antigen bundle autopep8
+antigen bundle pylint
 antigen bundle colored-man-pages
 antigen bundle srijanshetty/node.plugin.zsh
 antigen bundle bossjones/boss-git-zsh-plugin
