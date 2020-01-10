@@ -71,13 +71,15 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 RUN mkdir /run/sshd
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
-# Install rbenv
-RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && eval "$(~/.rbenv/bin/rbenv init -)"
-
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y install gdebi-core sshpass cron netcat net-tools iproute2
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    gdebi-core \
+    sshpass \
+    cron \
+    netcat \
+    net-tools \
+    iproute2 \
+    && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install \
     ansible \
     apt-utils \
@@ -169,6 +171,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
   RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
       libgdbm-dev \
+      ruby-full \
     && \
     sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config && \
@@ -176,19 +179,23 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Install ruby-install
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
-    wget -O ruby-install-0.7.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.7.0.tar.gz && \
-    tar -xzvf ruby-install-0.7.0.tar.gz && \
-    cd ruby-install-0.7.0/ && \
-    make install && \
-    cd && rm -rf ruby-install-0.7.0*
 
-# Install the latest version of Ruby
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
-    wget https://raw.githubusercontent.com/davidcelis/dotfiles/master/ruby-version && \
-    ruby-install ruby $(cat ruby-version) -c -i ~/.rbenv/versions/$(cat ruby-version) && \
-    rm ruby-version
+# DISABLED: # # Install rbenv
+# DISABLED: # RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && eval "$(~/.rbenv/bin/rbenv init -)"
+
+# DISABLED: # # Install ruby-install
+# DISABLED: # RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+# DISABLED: #     wget -O ruby-install-0.7.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.7.0.tar.gz && \
+# DISABLED: #     tar -xzvf ruby-install-0.7.0.tar.gz && \
+# DISABLED: #     cd ruby-install-0.7.0/ && \
+# DISABLED: #     make install -j4 && \
+# DISABLED: #     cd && rm -rf ruby-install-0.7.0*
+# DISABLED: #
+# DISABLED: # # Install the latest version of Ruby
+# DISABLED: # RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+# DISABLED: #     wget https://raw.githubusercontent.com/davidcelis/dotfiles/master/ruby-version && \
+# DISABLED: #     ruby-install ruby $(cat ruby-version) -c -i ~/.rbenv/versions/$(cat ruby-version) && \
+# DISABLED: #     rm ruby-version
 
 # ENV LANG="en_US.UTF-8"
 # ENV LC_ALL="en_US.UTF-8"
@@ -344,6 +351,7 @@ RUN echo "===> gcc for cgo..." && \
       libc6-dev \
       make \
       pkg-config \
+      ninja-build \
 	&& rm -rf /var/lib/apt/lists/*
 
 # RUN apk add --no-cache ca-certificates git python3 ctags tzdata bash neovim neovim-doc
@@ -421,39 +429,39 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 
-# # Go get popular golang libs
-# RUN echo "===> go get popular golang libs..." \
-#   && go get -u github.com/go-delve/delve/cmd/dlv \
-#   && go get -u github.com/sirupsen/logrus \
-#   && go get -u github.com/spf13/cobra/cobra \
-#   && go get -u github.com/golang/dep/cmd/dep \
-#   && go get -u github.com/fatih/structs \
-#   && go get -u github.com/gorilla/mux \
-#   && go get -u github.com/gorilla/handlers \
-#   && go get -u github.com/parnurzeal/gorequest \
-#   && go get -u github.com/urfave/cli \
-#   && go get -u github.com/apex/log/...
-# # Go get vim-go binaries
-# RUN echo "===> get vim-go binaries..." \
-#   && go get -u -v github.com/klauspost/asmfmt/cmd/asmfmt \
-#   && go get -u -v github.com/kisielk/errcheck \
-#   && go get -u -v github.com/davidrjenni/reftools/cmd/fillstruct \
-#   && go get -u -v github.com/stamblerre/gocode \
-#   && go get -u -v github.com/rogpeppe/godef \
-#   && go get -u -v github.com/zmb3/gogetdoc \
-#   && go get -u -v golang.org/x/tools/cmd/goimports \
-#   && go get -u -v golang.org/x/lint/golint \
-#   && GO111MODULE=on go get -v golang.org/x/tools/gopls@latest \
-#   && go get -u -v github.com/alecthomas/gometalinter \
-#   && go get -u -v github.com/golangci/golangci-lint/cmd/golangci-lint \
-#   && go get -u -v github.com/fatih/gomodifytags \
-#   && go get -u -v golang.org/x/tools/cmd/gorename \
-#   && go get -u -v github.com/jstemmer/gotags \
-#   && go get -u -v golang.org/x/tools/cmd/guru \
-#   && go get -u -v github.com/josharian/impl \
-#   && go get -u -v honnef.co/go/tools/cmd/keyify \
-#   && go get -u -v github.com/fatih/motion \
-#   && go get -u -v github.com/koron/iferr
+# Go get popular golang libs
+RUN echo "===> go get popular golang libs..." \
+  && go get -u github.com/go-delve/delve/cmd/dlv \
+  && go get -u github.com/sirupsen/logrus \
+  && go get -u github.com/spf13/cobra/cobra \
+  && go get -u github.com/golang/dep/cmd/dep \
+  && go get -u github.com/fatih/structs \
+  && go get -u github.com/gorilla/mux \
+  && go get -u github.com/gorilla/handlers \
+  && go get -u github.com/parnurzeal/gorequest \
+  && go get -u github.com/urfave/cli \
+  && go get -u github.com/apex/log/...
+# Go get vim-go binaries
+RUN echo "===> get vim-go binaries..." \
+  && go get -u -v github.com/klauspost/asmfmt/cmd/asmfmt \
+  && go get -u -v github.com/kisielk/errcheck \
+  && go get -u -v github.com/davidrjenni/reftools/cmd/fillstruct \
+  && go get -u -v github.com/stamblerre/gocode \
+  && go get -u -v github.com/rogpeppe/godef \
+  && go get -u -v github.com/zmb3/gogetdoc \
+  && go get -u -v golang.org/x/tools/cmd/goimports \
+  && go get -u -v golang.org/x/lint/golint \
+  && GO111MODULE=on go get -v golang.org/x/tools/gopls@latest \
+  && go get -u -v github.com/alecthomas/gometalinter \
+  && go get -u -v github.com/golangci/golangci-lint/cmd/golangci-lint \
+  && go get -u -v github.com/fatih/gomodifytags \
+  && go get -u -v golang.org/x/tools/cmd/gorename \
+  && go get -u -v github.com/jstemmer/gotags \
+  && go get -u -v golang.org/x/tools/cmd/guru \
+  && go get -u -v github.com/josharian/impl \
+  && go get -u -v honnef.co/go/tools/cmd/keyify \
+  && go get -u -v github.com/fatih/motion \
+  && go get -u -v github.com/koron/iferr
 
 # # Get powerline font just in case (to be installed on the docker host)
 # RUN apk add --no-cache wget \
@@ -463,16 +471,20 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 #   && rm -rf /tmp/* \
 #   && apk del --purge wget
 
-# ENV TERM=screen-256color
-# # Setup Language Environtment
-# ENV LANG="C.UTF-8"
-# ENV LC_COLLATE="C.UTF-8"
-# ENV LC_CTYPE="C.UTF-8"
-# ENV LC_MESSAGES="C.UTF-8"
-# ENV LC_MONETARY="C.UTF-8"
-# ENV LC_NUMERIC="C.UTF-8"
-# ENV LC_TIME="C.UTF-8"
+# Get powerline font just in case (to be installed on the docker host)
+RUN mkdir /root/powerline \
+  && cd /root/powerline \
+  && wget https://github.com/powerline/fonts/raw/master/Meslo%20Slashed/Meslo%20LG%20M%20Regular%20for%20Powerline.ttf
 
+ENV TERM=screen-256color
+# Setup Language Environtment
+ENV LANG="C.UTF-8"
+ENV LC_COLLATE="C.UTF-8"
+ENV LC_CTYPE="C.UTF-8"
+ENV LC_MESSAGES="C.UTF-8"
+ENV LC_MONETARY="C.UTF-8"
+ENV LC_NUMERIC="C.UTF-8"
+ENV LC_TIME="C.UTF-8"
 
 # # shell-init: error retrieving current directory: getcwd: cannot access parent directories: Permission denied
 # # internal/process/main_thread_only.js:42
@@ -490,6 +502,8 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 # #   syscall: 'uv_cwd'
 # # }
 
+# RUN curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
+
 # # HOTFIX: https://github.com/embark-framework/embark/issues/1677
 # RUN apk add --no-cache --update nodejs npm xclip acl && rm -rf /tmp/* \
 #     && setfacl -dR -m u:root:rwX /usr/lib/node_modules \
@@ -500,27 +514,25 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 #     && npm config set unsafe-perm true \
 #     && npm install --global pure-prompt
 
-# RUN git clone https://github.com/zsh-users/antigen.git /root/.antigen/antigen
+RUN git clone https://github.com/zsh-users/antigen.git /root/.antigen/antigen
 
-# # COPY zshrc.pure /root/.zshrc.pure
-# COPY zshrc.pure /root/.zshrc
-# # COPY zshrc /root/.zshrc
+COPY zshrc.pure /root/.zshrc
 
 # RUN apk --no-cache add fontconfig && rm -rf /tmp/*
 
-# # RUN mkdir -p $HOME/.fonts $HOME/.config/fontconfig/conf.d \
-# #   && wget -P $HOME/.fonts https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf \
-# #   && wget -P $HOME/.config/fontconfig/conf.d/ https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf \
-# #   && fc-cache -vf $HOME/.fonts/
+RUN mkdir -p $HOME/.fonts $HOME/.config/fontconfig/conf.d \
+  && wget -P $HOME/.fonts https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf \
+  && wget -P $HOME/.config/fontconfig/conf.d/ https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf \
+  && fc-cache -vf $HOME/.fonts/
 
 # # SOURCE: https://github.com/veggiemonk/ansible-dotfiles/blob/master/tasks/fonts.yml
-# RUN git clone https://github.com/powerline/fonts ~/powerlinefonts && \
-#   cd ~/powerlinefonts; ~/powerlinefonts/install.sh \
-#   && fc-cache -f
+RUN git clone https://github.com/powerline/fonts ~/powerlinefonts && \
+  cd ~/powerlinefonts; ~/powerlinefonts/install.sh \
+  && fc-cache -f
 
-# COPY bin/ /entrypoints
+COPY bin/ /entrypoints
 
-# RUN /entrypoints/install-fonts
+RUN /entrypoints/install-fonts
 
 # # DISABLED: # ARG HOME="/root"
 # # DISABLED: # ARG PROFILE="$HOME/.profile"
@@ -546,68 +558,44 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 # # ENTRYPOINT ["/bin/bash", "--login", "-i", "-c"]
 # # CMD ["bash"]
 
-# ARG RPI_BUILD=false
-# ENV RPI_BUILD ${RPI_BUILD}
+ARG RPI_BUILD=false
+ENV RPI_BUILD ${RPI_BUILD}
 
-# RUN mkdir /usr/local/src
+RUN mkdir /usr/local/src
 
-# RUN if [ "${RPI_BUILD}" = "false" ]; then \
-#     curl -L 'https://github.com/heppu/gkill/releases/download/v1.0.2/gkill-linux-amd64' > /usr/local/bin/gkill; \
-#     chmod +x /usr/local/bin/gkill; \
-#     curl -L 'https://github.com/rgburke/grv/releases/download/v0.3.2/grv_v0.3.2_linux64' > /usr/local/bin/grv; \
-#     chmod +x /usr/local/bin/grv; \
-#     curl --silent -L 'https://github.com/simeji/jid/releases/download/v0.7.6/jid_linux_amd64.zip' > /usr/local/src/jid.zip; \
-#     unzip /usr/local/src/jid.zip -d /usr/local/bin;  \
-#     chmod +x /usr/local/bin/jid; \
-#     else \
-#         echo "skipping all adm builds ..."; \
-#     fi
+RUN if [ "${RPI_BUILD}" = "false" ]; then \
+    curl -L 'https://github.com/heppu/gkill/releases/download/v1.0.2/gkill-linux-amd64' > /usr/local/bin/gkill; \
+    chmod +x /usr/local/bin/gkill; \
+    curl -L 'https://github.com/rgburke/grv/releases/download/v0.3.2/grv_v0.3.2_linux64' > /usr/local/bin/grv; \
+    chmod +x /usr/local/bin/grv; \
+    curl --silent -L 'https://github.com/simeji/jid/releases/download/v0.7.6/jid_linux_amd64.zip' > /usr/local/src/jid.zip; \
+    unzip /usr/local/src/jid.zip -d /usr/local/bin;  \
+    chmod +x /usr/local/bin/jid; \
+    else \
+        echo "skipping all adm builds ..."; \
+    fi
 
-# RUN git clone https://github.com/facebook/PathPicker.git /usr/local/src/PathPicker; cd /usr/local/src/PathPicker; ln -s "$(pwd)/fpp" /usr/local/bin/fpp; fpp --help
+RUN git clone https://github.com/facebook/PathPicker.git /usr/local/src/PathPicker; cd /usr/local/src/PathPicker; ln -s "$(pwd)/fpp" /usr/local/bin/fpp; fpp --help
 
-# RUN apk add --no-cache \
-#   ltrace \
-#   strace \
-#   gdb \
-#   fd \
-#   autoconf \
-#   automake \
-#   clang \
-#   clang-dev \
-#   lld \
-#   ccache \
-#   python3-dev \
-#   boost-python3 \
-#   python3-dbg \
-#   python3 \
-#   python3-doc \
-#   python3-tests \
-#   ruby \
-#   curl \
-#   wget \
-#   file \
-#   && export PIP_NO_CACHE_DIR=off \
-#   && export PIP_DISABLE_PIP_VERSION_CHECK=on \
-#   && pip3 install --upgrade pip wheel
-#   # && pip3 install capstone unicorn keystone-engine ropper retdec-python \
-#   # && pip3 install capstone unicorn ropper retdec-python \
-#   # && echo "===> Adding gef user..." \
-#   # && useradd -ms /bin/bash gef \
-#   # && echo "===> Install GEF..." \
-#   # && wget --progress=bar:force -O /home/gef/.gdbinit-gef.py https://github.com/hugsy/gef/raw/master/gef.py \
-#   # && chmod o+r /home/gef/.gdbinit-gef.py \
-#   # && echo "===> Clean up unnecessary files..."
+# RUN pip3 install capstone unicorn keystone-engine ropper retdec-python \
+#     && pip3 install capstone unicorn ropper retdec-python \
+#     && echo "===> Adding gef user..." \
+#     && useradd -ms /bin/bash gef \
+#     && echo "===> Install GEF..." \
+#     && wget --progress=bar:force -O /home/gef/.gdbinit-gef.py https://github.com/hugsy/gef/raw/master/gef.py \
+#     && chmod o+r /home/gef/.gdbinit-gef.py \
+#     && echo "===> Clean up unnecessary files..."
 
-# # hadolint ignore=DL3013
-# RUN pip3 install --upgrade \
-#   jsbeautifier \
-#   flake8 \
-#   mypy \
-#   bandit \
-#   pylint \
-#   pycodestyle \
-#   pydocstyle \
-#   ansible-lint
+# hadolint ignore=DL3013
+RUN pip3 install --upgrade \
+  jsbeautifier \
+  flake8 \
+  mypy \
+  bandit \
+  pylint \
+  pycodestyle \
+  pydocstyle \
+  ansible-lint
 
 # # RUN ln -sf /usr/bin/clang /usr/bin/cc
 # # RUN ln -sf /usr/bin/clang++ /usr/bin/c++
@@ -638,28 +626,35 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 #   && rm -rf /tmp/* \
 #   && apk del --purge .build-deps
 
+# Install nvim plugins
+RUN set -x; echo "===> neovim PlugInstall..." \
+  && nvim -i NONE -c PlugInstall -c quitall \
+  && echo "===> neovim UpdateRemotePlugins..." \
+  && nvim -i NONE -c UpdateRemotePlugins -c quitall \
+  && rm -rf /tmp/*
+
 # # RUN git clone https://github.com/junegunn/fzf.git -b 0.18.0 ~/.fzf
-# RUN cd ~/.fzf; ./install --all
+RUN cd ~/.fzf; ./install --all
 
-# ENV SHELL="zsh"
-# RUN /bin/zsh -l -c "curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash"
+ENV SHELL="zsh"
+RUN /bin/zsh -l -c "curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash"
 
-# RUN go get -u github.com/simeji/jid/cmd/jid
+RUN go get -u github.com/simeji/jid/cmd/jid
 
-# ENTRYPOINT ["tmux"]
+ENTRYPOINT ["tmux"]
 
-# ARG BUILD_DATE
-# ARG VCS_REF
-# ARG BUILD_VERSION
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
 
-# # Labels.
-# LABEL org.label-schema.schema-version="1.0"
-# LABEL org.label-schema.build-date=$BUILD_DATE
-# LABEL org.label-schema.name="bossjones/workstation-docker"
-# LABEL org.label-schema.vcs-ref=$VCS_REF
-# LABEL org.label-schema.vendor="TonyDark Industries"
-# LABEL org.label-schema.version=$BUILD_VERSION
-# LABEL maintainer="jarvis@theblacktonystark.com"
+# Labels.
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.name="bossjones/workstation-docker"
+LABEL org.label-schema.vcs-ref=$VCS_REF
+LABEL org.label-schema.vendor="TonyDark Industries"
+LABEL org.label-schema.version=$BUILD_VERSION
+LABEL maintainer="jarvis@theblacktonystark.com"
 
 
 # # ####################################
