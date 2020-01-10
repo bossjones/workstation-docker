@@ -429,6 +429,8 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 
+RUN go version
+
 # Go get popular golang libs
 RUN echo "===> go get popular golang libs..." \
   && go get -u github.com/go-delve/delve/cmd/dlv \
@@ -561,7 +563,7 @@ RUN /entrypoints/install-fonts
 ARG RPI_BUILD=false
 ENV RPI_BUILD ${RPI_BUILD}
 
-RUN mkdir /usr/local/src
+# RUN mkdir /usr/local/src
 
 RUN if [ "${RPI_BUILD}" = "false" ]; then \
     curl -L 'https://github.com/heppu/gkill/releases/download/v1.0.2/gkill-linux-amd64' > /usr/local/bin/gkill; \
@@ -626,6 +628,11 @@ RUN pip3 install --upgrade \
 #   && rm -rf /tmp/* \
 #   && apk del --purge .build-deps
 
+# make apt use ipv4 instead of ipv6 ( faster resolution )
+RUN sed -i "s@^#precedence ::ffff:0:0/96  100@precedence ::ffff:0:0/96  100@" /etc/gai.conf
+
+RUN apt-get update && apt-get install neovim -y
+
 # Install nvim plugins
 RUN set -x; echo "===> neovim PlugInstall..." \
   && nvim -i NONE -c PlugInstall -c quitall \
@@ -639,7 +646,95 @@ RUN cd ~/.fzf; ./install --all
 ENV SHELL="zsh"
 RUN /bin/zsh -l -c "curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash"
 
-RUN go get -u github.com/simeji/jid/cmd/jid
+# RUN go get -u github.com/simeji/jid/cmd/jid
+
+RUN curl -L 'https://github.com/sharkdp/fd/releases/download/v7.2.0/fd_7.2.0_amd64.deb' > /usr/local/src/fd_7.2.0_amd64.deb; \
+    apt install -y /usr/local/src/fd_7.2.0_amd64.deb
+
+# install bat
+RUN curl -L 'https://github.com/sharkdp/bat/releases/download/v0.12.1/bat_0.12.1_amd64.deb' > /usr/local/src/bat_0.12.1_amd64.deb; \
+    apt install -y /usr/local/src/bat_0.12.1_amd64.deb
+
+RUN apt-get update && apt-get install xclip -y
+
+# NOTE: https://github.com/bossjones/scarlett-jhbuild/blob/114ac39d58e711333b1be9f49224a550d83cb33b/Docker.full.ci
+# NOTE: we might need to enable some of these
+# RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
+#     sudo \
+#     bash-completion \
+#     apt-file \
+#     autoconf \
+#     automake \
+#     gettext \
+#     yelp-tools \
+#     flex \
+#     bison \
+#     build-essential \
+#     ccache \
+#     curl \
+#     dbus \
+#     gir1.2-gtk-3.0 \
+#     git \
+#     gobject-introspection \
+#     lcov \
+#     libbz2-dev \
+#     libcairo2-dev \
+#     libffi-dev \
+#     libgirepository1.0-dev \
+#     libglib2.0-dev \
+#     libgtk-3-0 \
+#     libreadline-dev \
+#     libsqlite3-dev \
+#     libssl-dev \
+#     ninja-build \
+#     python3-pip \
+#     xauth \
+#     pulseaudio-utils \
+#     gstreamer1.0-pulseaudio \
+#     libcanberra-pulse \
+#     libpulse-dev \
+#     libpulse-mainloop-glib0 \
+#     libpulse0 \
+#     xvfb \
+#     vim \
+#     && \
+#         apt-get update \
+#     && \
+#     DEBIAN_FRONTEND=noninteractive apt-get install -y libegl1-mesa-dev libxklavier-dev libudisks2-dev libdmapsharing-3.0-dev libplist-dev nettle-dev libgphoto2-dev liblcms2-dev libfuse-dev libsane-dev libxt-dev libical-dev libgbm-dev valgrind libusb-1.0-0-dev libxcb-res0-dev xserver-xorg-input-wacom libstartup-notification0-dev libgexiv2-dev libarchive-dev libgl1-mesa-dev libfwup-dev libgnutls28-dev libpoppler-glib-dev libnma-dev libtag1-dev libusb-1.0-0-dev libndp-dev uuid-dev libgraphviz-dev libbluray-dev libcdio-paranoia-dev libsmbclient-dev libmtp-dev libv4l-dev libnfs-dev libpwquality-dev libxft-dev libsystemd-dev libnss3-dev libseccomp-dev libexiv2-dev check libhunspell-dev libmtdev-dev libanthy-dev libxrandr-dev libxdamage-dev libopus-dev libxi-dev libp11-kit-dev libtasn1-6-dev libwavpack-dev libnl-route-3-dev libcanberra-gtk-dev libxtst-dev libexempi-dev libudev-dev libplymouth-dev libxfixes-dev libunwind-dev libcaribou-dev libpolkit-agent-1-dev libavahi-gobject-dev libpolkit-gobject-1-dev dbus-tests libnl-genl-3-dev libxcb-dri2-0-dev liboauth-dev libpsl-dev libdrm-dev libevdev-dev libnspr4-dev libcanberra-gtk3-dev libexif-dev libvpx-dev libusbredirhost-dev libsndfile1-dev libxkbfile-dev libelf-dev libhangul-dev libxkbcommon-dev libxml2-dev libdotconf-dev libmusicbrainz5-dev libxslt1-dev libraw-dev libdbus-glib-1-dev libegl1-mesa-dev libnl-3-dev libxi-dev libsource-highlight-dev libvirt-dev libxcb-randr0-dev libimobiledevice-dev libgles2-mesa-dev libxkbcommon-x11-dev nettle-dev libxcomposite-dev libflac-dev libxcursor-dev libdvdread-dev libproxy-dev libkyotocabinet-dev libwebkit2gtk-4.0-dev libepoxy-dev flex valac xmlto texinfo xwayland libcups2-dev ruby libgpgme-dev gperf wget cmake sassc argyll intltool desktop-file-utils docbook-utils ragel doxygen yasm cargo libunistring-dev libmpfr-dev libhyphen-dev libkrb5-dev ppp-dev libxinerama-dev libmpc-dev libsasl2-dev libldap2-dev libpam0g-dev libdb5.3-dev libcap-dev libtiff5-dev libmagic-dev libgcrypt20-dev libiw-dev libjpeg-turbo8-dev libyaml-dev libwebp-dev libespeak-dev intltool libxslt1-dev docbook-xml docbook-xsl libgudev-1.0-dev gir1.2-gudev-1.0 libfl-dev fcitx-libs-dev libxcb-xkb-dev doxygen xorg-dev libepoxy-dev libdbus-1-dev libjpeg-dev libtiff-dev desktop-file-utils libwayland-egl1-mesa ragel libxml2-dev libxft-dev xmlto libxtst-dev xutils-dev \
+#     && \
+#         rm -rf /var/lib/apt/lists/*
+
+# SOURCE: https://github.com/rastasheep/ubuntu-sshd/blob/master/16.04/Dockerfile
+
+# 1. small fix for SSH in ubuntu 13.10 (that's harmless everywhere else)
+# 2. permit root logins and set simple password password and pubkey
+# 3. change requiretty to !requiretty in /etc/sudoers
+RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
+    sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -ri 's/^#?PubkeyAuthentication\s+.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -ri 's/requiretty/!requiretty/' /etc/sudoers && \
+    echo 'root:root' | chpasswd
+
+RUN set -xe \
+    && useradd -U -d /home/${NON_ROOT_USER} -m -r -G adm,tty,audio ${NON_ROOT_USER} \
+    && usermod -a -G ${NON_ROOT_USER} -s /bin/bash -u ${HOST_USER_ID} ${NON_ROOT_USER} \
+    && groupmod -g ${HOST_GROUP_ID} ${NON_ROOT_USER} \
+    && ( mkdir /home/${NON_ROOT_USER}/.ssh \
+    && chmod og-rwx /home/${NON_ROOT_USER}/.ssh \
+    && echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key" > /home/${NON_ROOT_USER}/.ssh/authorized_keys \
+    ) \
+    && echo "${NON_ROOT_USER}     ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+    && echo "%${NON_ROOT_USER}     ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+    && cat /etc/sudoers \
+    && echo "${NON_ROOT_USER}:${NON_ROOT_USER}" | chpasswd && \
+    mkdir /var/run/dbus && \
+    mkdir -p /home/${NON_ROOT_USER}/.local/bin && \
+    chown ${NON_ROOT_USER}:${NON_ROOT_USER} -Rv /home/${NON_ROOT_USER}
+
+EXPOSE 22
+
+RUN git clone https://github.com/bossjones/debug-tools /usr/local/src/debug-tools && \
+    /usr/local/src/debug-tools/update-bossjones-debug-tools
 
 ENTRYPOINT ["tmux"]
 

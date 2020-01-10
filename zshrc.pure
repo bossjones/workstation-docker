@@ -91,6 +91,9 @@ antigen use oh-my-zsh
 
 antigen bundle go
 antigen bundle tmux
+antigen bundle fancy-ctrl-z
+antigen bundle git-extras
+antigen bundle gnu-utils
 antigen bundle zsh_reload
 antigen bundle tmux
 antigen bundle python
@@ -101,6 +104,11 @@ antigen bundle unixorn/autoupdate-antigen.zshplugin
 antigen bundle urbainvaes/fzf-marks
 antigen bundle ytet5uy4/fzf-widgets
 antigen bundle zdharma/fast-syntax-highlighting
+
+#  A utility tool powered by fzf for using git interactively.
+# SOURCE: https://github.com/wfxr/forgit
+antigen bundle wfxr/forgit
+
 antigen bundle joel-porquet/zsh-dircolors-solarized
 antigen bundle mollifier/anyframe
 antigen bundle history
@@ -110,9 +118,12 @@ antigen bundle pylint
 antigen bundle colored-man-pages
 antigen bundle srijanshetty/node.plugin.zsh
 antigen bundle bossjones/boss-git-zsh-plugin
-antigen bundle bossjones/boss-docker-zsh-plugin
+# antigen bundle bossjones/boss-docker-zsh-plugin
 antigen bundle caarlos0/zsh-git-sync
 antigen bundle chrissicool/zsh-256color
+antigen bundle willghatch/zsh-hooks
+antigen bundle luismayta/zsh-servers-functions
+antigen bundle luismayta/zsh-peco-ssh-connect
 antigen bundle mafredri/zsh-async
 antigen bundle sindresorhus/pure
 
@@ -158,6 +169,15 @@ bindkey '^@drv' fzf-docker-remove-volumes
 bindkey '^@dsa' fzf-docker-start-containers
 bindkey '^@dso' fzf-docker-stop-containers
 bindkey '^U' autosuggest-accept
+
+# forgit
+export FORGIT_FZF_DEFAULT_OPTS="
+--exact
+--border
+--cycle
+--reverse
+--height '100%'
+"
 
 # fzf
 export FZF_TMUX=0
@@ -316,6 +336,21 @@ zle -N globalias
 bindkey " " globalias
 bindkey "^ " magic-space           # control-space to bypass completion
 bindkey -M isearch " " magic-space # normal space during searches
+
+###########################################
+# aliases borrowed from unixorn
+alias historysummary="history | awk '{a[\$2]++} END{for(i in a){printf \"%5d\t%s\n\",a[i],i}}' | sort -rn | head"
+# Strip color codes from commands that insist on spewing them so we can
+# pipe them into files cleanly.
+alias stripcolors='sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"'
+
+# lists zombie processes
+zombie() {
+  ps aux | awk '{if ($8=="Z") { print $2 }}'
+}
+alias zombies=zombie
+
+###########################################
 
 PURE_PROMPT_SYMBOL=❯
 prompt pure
