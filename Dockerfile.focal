@@ -1,4 +1,22 @@
-FROM ubuntu:20.04
+# Install 1password
+FROM ubuntu:19.04 as onepassword_builder
+RUN apt-get update && apt-get install -y curl ca-certificates unzip
+RUN curl -sS -o 1password.zip https://cache.agilebits.com/dist/1P/op/pkg/v0.5.5/op_linux_amd64_v0.5.5.zip && unzip 1password.zip op -d /usr/local/bin && rm 1password.zip
+
+# Install terraform
+FROM ubuntu:19.04 as terraform_builder
+RUN apt-get update && apt-get install -y wget ca-certificates unzip
+RUN wget https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip && unzip terraform_0.11.13_linux_amd64.zip && chmod +x terraform && mv terraform /usr/local/bin && rm terraform_0.11.13_linux_amd64.zip
+
+# Install rust
+FROM ubuntu:19.04 as rust_builder
+RUN apt-get update && apt-get install -y curl ca-certificates
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# SOURCE: https://github.com/davidcelis/dotfiles/blob/0901a99f283f27944f2f0a85f8dbb32ed410f460/workstation/Dockerfile
+
+# base OS
+FROM ubuntu:19.04
 
 LABEL maintainer "https://github.com/bossjones"
 
@@ -21,8 +39,176 @@ ARG HOST_GROUP_ID=1000
 ENV HOST_GROUP_ID ${HOST_GROUP_ID}
 
 RUN apt-get update -y && apt-get install -y expect
-COPY unminimize.exp /
-RUN expect unminimize.exp
+# COPY unminimize.exp /
+# RUN expect unminimize.exp
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+	build-essential \
+	ca-certificates \
+	curl \
+	git \
+	jq \
+	less \
+	man \
+	mosh \
+	openssh-server \
+	ripgrep \
+	silversearcher-ag \
+	software-properties-common \
+	sudo \
+	tig \
+	tmate \
+	tmux \
+	tree \
+	unzip \
+	wget \
+	zip \
+	zlib1g-dev \
+	--no-install-recommends \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Set up SSH for port 3222
+RUN mkdir /run/sshd
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+# # Install rbenv
+# RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && eval "$(~/.rbenv/bin/rbenv init -)"
+
+# # Install ruby-install
+# RUN wget -O ruby-install-0.7.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.7.0.tar.gz && \
+# 	tar -xzvf ruby-install-0.7.0.tar.gz && \
+# 	cd ruby-install-0.7.0/ && \
+# 	make install && \
+# 	cd && rm -rf ruby-install-0.7.0*
+
+# # Install the latest version of Ruby
+# RUN wget https://raw.githubusercontent.com/davidcelis/dotfiles/master/ruby-version && \
+#   ruby-install ruby $(cat ruby-version) -c -i ~/.rbenv/versions/$(cat ruby-version) && \
+# 	rm ruby-version
+
+# ENV LANG="en_US.UTF-8"
+# ENV LC_ALL="en_US.UTF-8"
+# ENV LANGUAGE="en_US.UTF-8"
+
+# # RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+# # 	locale-gen --purge $LANG && \
+# # 	dpkg-reconfigure --frontend=noninteractive locales && \
+# # 	update-locale LANG=$LANG LC_ALL=$LC_ALL LANGUAGE=$LANGUAGE
+
+RUN apt-get update && apt-get install -y language-pack-en*
+
+# RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+#     && export LANG=en_US.UTF-8
+
+# # 1p
+# COPY --from=onepassword_builder /usr/local/bin/op /usr/local/bin/
+
+# # Terraform tools
+# COPY --from=terraform_builder /usr/local/bin/terraform /usr/local/bin/
+
+# # Rust tools
+# COPY --from=rust_builder /root/.cargo ~/.cargo
+# RUN cargo install exa
+
+RUN sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted,deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted,g" /etc/apt/sources.list && \
+    sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ focal-updates main restricted,deb-src http://archive.ubuntu.com/ubuntu/ focal-updates main restricted,g" /etc/apt/sources.list && \
+    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
+    sudo \
+    bash-completion \
+    apt-file \
+    autoconf \
+    automake \
+    gettext \
+    build-essential \
+    ccache \
+    curl \
+    git \
+    lcov \
+    libbz2-dev \
+    libffi-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    python3-pip \
+    vim \
+    && apt-get autoclean -y && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/{cache,log}/ && \
+    rm -rf /var/lib/apt/lists/*.lz4
+
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq && \
+        apt-get install -yqq \
+        git \
+        wget \
+        curl \
+        locales \
+        software-properties-common \
+        ca-certificates \
+        && \
+        localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+        && export LANG=en_US.UTF-8 && \
+        apt-get update && apt-get install -y --no-install-recommends \
+        tcl \
+        tk \
+        curl \
+        ca-certificates \
+        && apt-get autoclean -y && \
+        apt-get autoremove -y && \
+        rm -rf /var/lib/{cache,log}/ && \
+        rm -rf /var/lib/apt/lists/*.lz4
+
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq \
+    && apt-get install -y --no-install-recommends \
+        # bzr \
+        git \
+        # mercurial \
+        openssh-client \
+        # subversion \
+        procps && \
+        apt-get update && apt-get install -y --no-install-recommends \
+        autoconf \
+        automake \
+        bzip2 \
+        file \
+        g++ \
+        gcc \
+        imagemagick \
+        libbz2-dev \
+        libc6-dev \
+        libcurl4-openssl-dev \
+        libdb-dev \
+        libevent-dev \
+        libffi-dev \
+        libgeoip-dev \
+        libglib2.0-dev \
+        libjpeg-dev \
+        libkrb5-dev \
+        liblzma-dev \
+        libmagickcore-dev \
+        libmagickwand-dev \
+        libmysqlclient-dev \
+        libncurses-dev \
+        libpng-dev \
+        libpq-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        libtool \
+        libwebp-dev \
+        libxml2-dev \
+        libxslt-dev \
+        libyaml-dev \
+        make \
+        patch \
+        xz-utils \
+        zlib1g-dev \
+        bash \
+        && apt-get autoclean -y && \
+        apt-get autoremove -y && \
+        rm -rf /var/lib/{cache,log}/ && \
+        rm -rf /var/lib/apt/lists/*.lz4
 
 # RUN apk add --no-cache ca-certificates git python3 ctags tzdata bash neovim neovim-doc
 
