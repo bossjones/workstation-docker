@@ -81,22 +81,18 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install \
     ansible \
     apt-utils \
-    autoconf \
     bash \
     bash-completion \
     binutils-dev \
     bison \
     bridge-utils \
-    build-essential \
     ca-certificates \
-    ccache \
     ccze \
     # conntrack-tools \
     dhcping \
     # drill \
     ethtool \
     fping \
-    curl \
     direnv \
     dnsutils \
     dstat \
@@ -105,7 +101,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     file \
     fontconfig \
     gcc \
-    git \
     iptables \
     iptraf-ng \
     libc6 \
@@ -137,7 +132,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     mtr \
     ncdu \
     nftables \
-    net-tools \
     # net-snmp \
     netperf \
     tcptrack \
@@ -154,7 +148,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     rsyslog \
     silversearcher-ag \
     socat \
-    software-properties-common \
     strace \
     sudo \
     sysstat \
@@ -175,12 +168,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
 
   RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      apt-utils \
-      software-properties-common \
-      rsyslog \
-      systemd \
-      systemd-cron \
-      sudo \
       libgdbm-dev \
     && \
     sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
@@ -230,37 +217,31 @@ RUN apt-get update && apt-get install -y language-pack-en*
 RUN sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ disco main restricted,deb-src http://archive.ubuntu.com/ubuntu/ disco main restricted,g" /etc/apt/sources.list && \
     sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ disco-updates main restricted,deb-src http://archive.ubuntu.com/ubuntu/ disco-updates main restricted,g" /etc/apt/sources.list && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
-    sudo \
-    bash-completion \
     apt-file \
     autoconf \
     automake \
     gettext \
     build-essential \
     ccache \
-    curl \
-    git \
     lcov \
     libbz2-dev \
-    libffi-dev \
     libreadline-dev \
     libsqlite3-dev \
-    libssl-dev \
     # python3-pip \
-    vim \
-    && apt-get autoclean -y && \
-    apt-get autoremove -y && \
+    && \
     rm -rf /var/lib/{cache,log}/ && \
     rm -rf /var/lib/apt/lists/*.lz4
+# && apt-get autoclean -y && \
+# apt-get autoremove -y && \
+# rm -rf /var/lib/{cache,log}/ && \
+# rm -rf /var/lib/apt/lists/*.lz4
 
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq && \
         apt-get install -yqq \
-        git \
         wget \
         curl \
         locales \
-        software-properties-common \
         ca-certificates \
         && \
         localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
@@ -270,16 +251,18 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq && \
         tk \
         curl \
         ca-certificates \
-        && apt-get autoclean -y && \
-        apt-get autoremove -y && \
+        && \
         rm -rf /var/lib/{cache,log}/ && \
         rm -rf /var/lib/apt/lists/*.lz4
+        # && apt-get autoclean -y && \
+        # apt-get autoremove -y && \
+        # rm -rf /var/lib/{cache,log}/ && \
+        # rm -rf /var/lib/apt/lists/*.lz4
 
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq \
     && apt-get install -y --no-install-recommends \
         # bzr \
-        git \
         # mercurial \
         openssh-client \
         # subversion \
@@ -311,7 +294,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq \
         libpq-dev \
         libreadline-dev \
         libsqlite3-dev \
-        libssl-dev \
         libtool \
         libwebp-dev \
         libxml2-dev \
@@ -322,14 +304,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq \
         xz-utils \
         zlib1g-dev \
         bash \
-        && apt-get autoclean -y && \
-        apt-get autoremove -y && \
+        && \
         rm -rf /var/lib/{cache,log}/ && \
         rm -rf /var/lib/apt/lists/*.lz4
+        # && apt-get autoclean -y && \
+        # apt-get autoremove -y && \
+        # rm -rf /var/lib/{cache,log}/ && \
+        # rm -rf /var/lib/apt/lists/*.lz4
 
 RUN apt-get update && \
 apt-get install -y \
-  git \
   build-essential \
   cmake \
   tmux \
@@ -339,14 +323,14 @@ apt-get install -y \
 
 RUN wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
 RUN python3 /tmp/get-pip.py
-RUN pip3 install -U tox wheel setuptools PyYAML
+# RUN pip3 install -U tox wheel setuptools PyYAML
+RUN pip3 install -U tox wheel setuptools
 
-RUN pip3 install \
+RUN echo "===> install conan..." && \
+    pip3 install \
         conan \
         pip-tools \
         pipdeptree \
-        pipenv \
-        setuptools \
         virtualenv \
         virtualenvwrapper \
         tox
