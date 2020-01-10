@@ -71,20 +71,137 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 RUN mkdir /run/sshd
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
-# # Install rbenv
-# RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && eval "$(~/.rbenv/bin/rbenv init -)"
+# Install rbenv
+RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && eval "$(~/.rbenv/bin/rbenv init -)"
 
-# # Install ruby-install
-# RUN wget -O ruby-install-0.7.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.7.0.tar.gz && \
-# 	tar -xzvf ruby-install-0.7.0.tar.gz && \
-# 	cd ruby-install-0.7.0/ && \
-# 	make install && \
-# 	cd && rm -rf ruby-install-0.7.0*
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install gdebi-core sshpass cron netcat net-tools iproute2
 
-# # Install the latest version of Ruby
-# RUN wget https://raw.githubusercontent.com/davidcelis/dotfiles/master/ruby-version && \
-#   ruby-install ruby $(cat ruby-version) -c -i ~/.rbenv/versions/$(cat ruby-version) && \
-# 	rm ruby-version
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    ansible \
+    apt-utils \
+    autoconf \
+    bash \
+    bash-completion \
+    binutils-dev \
+    bison \
+    bridge-utils \
+    build-essential \
+    ca-certificates \
+    ccache \
+    ccze \
+    # conntrack-tools \
+    dhcping \
+    # drill \
+    ethtool \
+    fping \
+    curl \
+    direnv \
+    dnsutils \
+    dstat \
+    elfutils \
+    fasd \
+    file \
+    fontconfig \
+    gcc \
+    git \
+    iptables \
+    iptraf-ng \
+    libc6 \
+    libc6-dev \
+    liboping-dev \
+    ipvsadm \
+    git-core \
+    htop \
+    httpie \
+    iftop \
+    iotop \
+    iperf \
+    iperf3 \
+    iputils-ping \
+    jq \
+    libevent-dev \
+    libffi-dev \
+    libncurses-dev \
+    libncurses5-dev \
+    libreadline6-dev \
+    libssl-dev \
+    libyaml-dev \
+    locales \
+    lsb-release \
+    lsof \
+    ltrace \
+    make \
+    mlocate \
+    mtr \
+    ncdu \
+    nftables \
+    net-tools \
+    # net-snmp \
+    netperf \
+    tcptrack \
+    ngrep \
+    nmap \
+    # nping \
+    openssh-server \
+    patch \
+    peco \
+    perf-tools-unstable \
+    procps \
+    python \
+    python-dev \
+    rsyslog \
+    silversearcher-ag \
+    socat \
+    software-properties-common \
+    strace \
+    sudo \
+    sysstat \
+    openssl \
+    python-crypto \
+    scapy \
+    systemd \
+    systemd-cron \
+    tcptraceroute \
+    util-linux \
+    tcpdump \
+    tmux \
+    traceroute \
+    tree \
+    vim \
+    wget \
+    zlib1g-dev
+
+  RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      apt-utils \
+      software-properties-common \
+      rsyslog \
+      systemd \
+      systemd-cron \
+      sudo \
+      libgdbm-dev \
+    && \
+    sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config && \
+    sed -i 's/^\($ModLoad imklog\)/#\1/' /etc/rsyslog.conf && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install ruby-install
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+    wget -O ruby-install-0.7.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.7.0.tar.gz && \
+    tar -xzvf ruby-install-0.7.0.tar.gz && \
+    cd ruby-install-0.7.0/ && \
+    make install && \
+    cd && rm -rf ruby-install-0.7.0*
+
+# Install the latest version of Ruby
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+    wget https://raw.githubusercontent.com/davidcelis/dotfiles/master/ruby-version && \
+    ruby-install ruby $(cat ruby-version) -c -i ~/.rbenv/versions/$(cat ruby-version) && \
+    rm ruby-version
 
 # ENV LANG="en_US.UTF-8"
 # ENV LC_ALL="en_US.UTF-8"
@@ -110,8 +227,8 @@ RUN apt-get update && apt-get install -y language-pack-en*
 # COPY --from=rust_builder /root/.cargo ~/.cargo
 # RUN cargo install exa
 
-RUN sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted,deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted,g" /etc/apt/sources.list && \
-    sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ focal-updates main restricted,deb-src http://archive.ubuntu.com/ubuntu/ focal-updates main restricted,g" /etc/apt/sources.list && \
+RUN sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ disco main restricted,deb-src http://archive.ubuntu.com/ubuntu/ disco main restricted,g" /etc/apt/sources.list && \
+    sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ disco-updates main restricted,deb-src http://archive.ubuntu.com/ubuntu/ disco-updates main restricted,g" /etc/apt/sources.list && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
     sudo \
     bash-completion \
@@ -129,7 +246,7 @@ RUN sed -i "s,# deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted,
     libreadline-dev \
     libsqlite3-dev \
     libssl-dev \
-    python3-pip \
+    # python3-pip \
     vim \
     && apt-get autoclean -y && \
     apt-get autoremove -y && \
@@ -210,6 +327,41 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq \
         rm -rf /var/lib/{cache,log}/ && \
         rm -rf /var/lib/apt/lists/*.lz4
 
+RUN apt-get update && \
+apt-get install -y \
+  git \
+  build-essential \
+  cmake \
+  tmux \
+  zsh \
+  clang \
+  manpages-dev
+
+RUN wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
+RUN python3 /tmp/get-pip.py
+RUN pip3 install -U tox wheel setuptools PyYAML
+
+RUN pip3 install \
+        conan \
+        pip-tools \
+        pipdeptree \
+        pipenv \
+        setuptools \
+        virtualenv \
+        virtualenvwrapper \
+        tox
+
+# gcc for cgo
+RUN echo "===> gcc for cgo..." && \
+    apt-get update && \
+    apt-get install -y \
+      g++ \
+      gcc \
+      libc6-dev \
+      make \
+      pkg-config \
+	&& rm -rf /var/lib/apt/lists/*
+
 # RUN apk add --no-cache ca-certificates git python3 ctags tzdata bash neovim neovim-doc
 
 # ######################
@@ -218,164 +370,72 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq \
 
 # RUN apk add --no-cache zsh tmux && rm -rf /tmp/*
 
-# RUN git clone git://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
-# RUN git clone https://github.com/tmux-plugins/tpm /root/.tmux/plugins/tpm
-# RUN git clone https://github.com/tmux-plugins/tmux-cpu /root/.tmux/plugins/tmux-cpu
-# RUN git clone https://github.com/tmux-plugins/tmux-prefix-highlight /root/.tmux/plugins/tmux-prefix-highlight
+RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
+RUN git clone https://github.com/tmux-plugins/tpm /root/.tmux/plugins/tpm
+RUN git clone https://github.com/tmux-plugins/tmux-cpu /root/.tmux/plugins/tmux-cpu
+RUN git clone https://github.com/tmux-plugins/tmux-prefix-highlight /root/.tmux/plugins/tmux-prefix-highlight
 
-# COPY tmux.conf /root/.tmux.conf
-# COPY tmux.linux.conf /root/.tmux.linux.conf
+COPY tmux.conf /root/.tmux.conf
+COPY tmux.linux.conf /root/.tmux.linux.conf
 
 # ####################
 # ### SETUP NEOVIM ###
 # ####################
 
-# # Install vim plugin manager
-# RUN apk add --no-cache curl \
-#   && curl -fLo /root/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-#   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
-#   && rm -rf /tmp/* \
-#   && apk del --purge curl
+# Install vim plugin manager
+RUN curl -fLo /root/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+  && rm -rf /tmp/*
 
-# # Install vim plugins
-# RUN apk add --no-cache -t .build-deps build-base python3-dev \
-#   && pip3 install -U neovim \
-#   && rm -rf /tmp/* \
-#   && apk del --purge .build-deps
+# Install vim plugins
+RUN pip3 install -U neovim \
+  && rm -rf /tmp/*
 
-# RUN mkdir -p /root/.config/nvim
-# COPY vimrc /root/.config/nvim/init.vim
-# RUN ln -s /root/.config/nvim/init.vim /root/.vimrc
+RUN mkdir -p /root/.config/nvim
+COPY vimrc /root/.config/nvim/init.vim
+RUN ln -s /root/.config/nvim/init.vim /root/.vimrc
 
-# COPY nvim/snippets /root/.config/nvim/snippets
-# COPY nvim/spell /root/.config/nvim/spell
+COPY nvim/snippets /root/.config/nvim/snippets
+COPY nvim/spell /root/.config/nvim/spell
 
-# # https://github.com/pyenv/pyenv/wiki/Common-build-problems
-# RUN apk add --no-cache \
-#     # libressl2.7-libtls \
-#     # mpfr3 \
-#     build-base \
-#     gcc \
-#     abuild \
-#     binutils \
-#     binutils-doc \
-#     gcc-doc \
-#     cmake \
-#     cmake-doc \
-#     extra-cmake-modules \
-#     extra-cmake-modules-doc \
-#     ccache \
-#     ccache-doc \
-#     bash \
-#     bash-completion \
-#     bash-doc \
-#     binutils \
-#     bzip2-dev \
-#     ca-certificates \
-#     coreutils \
-#     dpkg \
-#     dpkg-dev \
-#     expat \
-#     expat-dev \
-#     findutils \
-#     fontconfig \
-#     fontconfig-dev \
-#     freetype \
-#     freetype-dev \
-#     gcc \
-#     gdbm \
-#     gdbm-dev \
-#     git \
-#     gmp \
-#     grep \
-#     inputproto \
-#     isl \
-#     kbproto \
-#     less \
-#     less-doc \
-#     libacl \
-#     libatomic \
-#     libattr \
-#     libbsd \
-#     libbz2 \
-#     libc-dev \
-#     libcap \
-#     libcurl \
-#     libffi \
-#     libffi-dev \
-#     libgcc \
-#     libgomp \
-#     libhistory \
-#     libpng \
-#     libpng-dev \
-#     libpthread-stubs \
-#     libressl \
-#     libressl-dev \
-#     libssh2 \
-#     libstdc++ \
-#     libx11 \
-#     libx11-dev \
-#     libxau \
-#     libxau-dev \
-#     libxcb \
-#     libxcb-dev \
-#     libxdmcp \
-#     libxdmcp-dev \
-#     libxft \
-#     libxft-dev \
-#     libxrender \
-#     libxrender-dev \
-#     linux-headers \
-#     linux-pam \
-#     make \
-#     man \
-#     man-pages \
-#     mdocml-apropos \
-#     mpc1 \
-#     musl-dev \
-#     ncurses-dev \
-#     ncurses-libs \
-#     ncurses-terminfo \
-#     ncurses-terminfo-base \
-#     patch \
-#     pax-utils \
-#     pciutils \
-#     pcre2 \
-#     perl \
-#     pkgconf \
-#     readline \
-#     readline-dev \
-#     renderproto \
-#     shadow \
-#     sqlite-dev \
-#     sqlite-libs \
-#     sudo \
-#     tcl \
-#     tcl-dev \
-#     tk \
-#     tk-dev \
-#     tree \
-#     usbutils \
-#     util-linux \
-#     xcb-proto \
-#     xextproto \
-#     xproto \
-#     xtrans \
-#     xz \
-#     xz-dev \
-#     xz-libs \
-#     mkfontdir \
-#     terminus-font \
-#     zlib-dev
+ENV GOLANG_VERSION 1.13.6
 
-# # Install https://github.com/sgerrand/alpine-pkg-glibc
-# RUN apk --no-cache add ca-certificates wget && \
-#     wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
-#     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-2.30-r0.apk && \
-#     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-bin-2.30-r0.apk && \
-#     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-dev-2.30-r0.apk && \
-#     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-i18n-2.30-r0.apk && \
-#     apk add glibc-2.30-r0.apk glibc-bin-2.30-r0.apk glibc-dev-2.30-r0.apk glibc-i18n-2.30-r0.apk
+RUN set -eux; \
+	\
+# this "case" statement is generated via "update.sh"
+	dpkgArch="$(dpkg --print-architecture)"; \
+	case "${dpkgArch##*-}" in \
+		amd64) goRelArch='linux-amd64'; goRelSha256='a1bc06deb070155c4f67c579f896a45eeda5a8fa54f35ba233304074c4abbbbd' ;; \
+		armhf) goRelArch='linux-armv6l'; goRelSha256='37a1a83e363dcf146a67fa839d170fd1afb13009585fdd493d0a3370fbe6f785' ;; \
+		arm64) goRelArch='linux-arm64'; goRelSha256='0a18125c4ed80f9c3045cf92384670907c4796b43ed63c4307210fe93e5bbca5' ;; \
+		i386) goRelArch='linux-386'; goRelSha256='27feb013106da784f09e560720aa41ab395c67f7eed4c4a0fce04bc6e3d01c7d' ;; \
+		ppc64el) goRelArch='linux-ppc64le'; goRelSha256='26a977a8af5dc50a562f0a57b58dded5fa3bacfe77722cf8a84ea54ca54728dd' ;; \
+		s390x) goRelArch='linux-s390x'; goRelSha256='5cd9900a1fa0f0cac657930b648381cad9b8c5e2bbc77caf86a6fb5cedad0017' ;; \
+		*) goRelArch='src'; goRelSha256='aae5be954bdc40bcf8006eb77e8d8a5dde412722bc8effcdaf9772620d06420c'; \
+			echo >&2; echo >&2 "warning: current architecture ($dpkgArch) does not have a corresponding Go binary release; will be building from source"; echo >&2 ;; \
+	esac; \
+	\
+	url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
+	wget -O go.tgz "$url"; \
+	echo "${goRelSha256} *go.tgz" | sha256sum -c -; \
+	tar -C /usr/local -xzf go.tgz; \
+	rm go.tgz; \
+	\
+	if [ "$goRelArch" = 'src' ]; then \
+		echo >&2; \
+		echo >&2 'error: UNIMPLEMENTED'; \
+		echo >&2 'TODO install golang-any from jessie-backports for GOROOT_BOOTSTRAP (and uninstall after build)'; \
+		echo >&2; \
+		exit 1; \
+	fi; \
+	\
+	export PATH="/usr/local/go/bin:$PATH"; \
+	go version
+
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 
 # # Go get popular golang libs
 # RUN echo "===> go get popular golang libs..." \
@@ -793,3 +853,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq \
 
 # # TODO: Search for docs/grep
 # # apk search nginx | grep -- -doc
+
+# # Note: You propably need to pass the timezone via an environment variable e.g.
+# # by adding -e TZ=UTC. This prevents an UnknownTimeZoneError(zone)
+# # exception (pytz.exceptions.UnknownTimeZoneError: 'local') when
+# # generating the pages.
+# ENV TZ 'UTC'
