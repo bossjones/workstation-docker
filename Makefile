@@ -20,13 +20,14 @@ all: build size
 
 .PHONY: dockerfile
 dockerfile: ## Update Dockerfiles
-	@sed -i.bu 's/FROM golang:[0-9.]\{5\}-alpine/FROM golang:$(VERSION)-alpine/' Dockerfile
+	@echo "===> dockerfile..."
+# @sed -i.bu 's/FROM golang:[0-9.]\{5\}-alpine/FROM golang:$(VERSION)-alpine/' Dockerfile
 
 build: dockerfile ## Build docker image
 ifeq "$(VERSION)" "ubuntu"
 	docker build -f Dockerfile.ubuntu  --build-arg VCS_REF=$(GIT_SHA) --build-arg BUILD_DATE=$(VERSION) --build-arg RPI_BUILD=$(RPI_BUILD) --build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') -t $(ORG)/$(NAME):ubuntu .
 else
-	docker build  --build-arg VCS_REF=$(GIT_SHA) --build-arg BUILD_DATE=$(VERSION) --build-arg RPI_BUILD=$(RPI_BUILD) --build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') -t $(ORG)/$(NAME):$(VERSION) .
+	docker build -f Dockerfile.focal --build-arg VCS_REF=$(GIT_SHA) --build-arg BUILD_DATE=$(VERSION) --build-arg RPI_BUILD=$(RPI_BUILD) --build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') -t $(ORG)/$(NAME):$(VERSION) .
 endif
 
 .PHONY: size

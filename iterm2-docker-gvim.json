@@ -1,5 +1,5 @@
 {
-  "Set Local Environment Vars" : true,
+  "Custom Directory" : "No",
   "Working Directory" : "\/Users\/malcolm",
   "Prompt Before Closing 2" : 0,
   "Selected Text Color" : {
@@ -353,23 +353,23 @@
     "Blue Component" : 0.25882352941176473,
     "Green Component" : 0.21176470588235294
   },
-  "Default Bookmark" : "No",
-  "Cursor Color" : {
-    "Red Component" : 0.51372549019607838,
-    "Color Space" : "sRGB",
-    "Blue Component" : 0.58823529411764708,
-    "Green Component" : 0.58039215686274515
-  },
-  "Disable Smcup Rmcup" : false,
-  "Name" : "docker-gvim",
-  "Blinking Cursor" : false,
-  "Guid" : "886BC316-0BD5-4758-9502-7C34BB73BE02",
   "Ansi 1 Color" : {
     "Red Component" : 0.86274509803921573,
     "Color Space" : "sRGB",
     "Blue Component" : 0.18431372549019609,
     "Green Component" : 0.19607843137254902
   },
+  "Default Bookmark" : "No",
+  "Disable Smcup Rmcup" : false,
+  "Name" : "docker-gvim",
+  "Blinking Cursor" : false,
+  "Cursor Color" : {
+    "Red Component" : 0.51372549019607838,
+    "Color Space" : "sRGB",
+    "Blue Component" : 0.58823529411764708,
+    "Green Component" : 0.58039215686274515
+  },
+  "Guid" : "886BC316-0BD5-4758-9502-7C34BB73BE02",
   "Ansi 8 Color" : {
     "Red Component" : 0,
     "Color Space" : "sRGB",
@@ -394,8 +394,8 @@
   "Smart Cursor Color" : true,
   "Semantic History" : {
     "editor" : "com.sublimetext.3",
-    "text" : "",
-    "action" : "best editor"
+    "action" : "best editor",
+    "text" : ""
   },
   "Ambiguous Double Width" : false,
   "Blur Radius" : 2,
@@ -407,7 +407,7 @@
   },
   "Cursor Type" : 2,
   "Blur" : false,
-  "Normal Font" : "mononokiNerdFontComplete-Regular 12",
+  "Normal Font" : "MesloLGSDZNerdFontComplete-Regular 11",
   "Vertical Spacing" : 1,
   "Disable Printing" : false,
   "Ansi 7 Color" : {
@@ -446,7 +446,7 @@
   "Bound Hosts" : [
 
   ],
-  "Non Ascii Font" : "mononokiNerdFontComplete-Regular 12",
+  "Non Ascii Font" : "MesloLGSDZNerdFontComplete-Regular 11",
   "Ansi 13 Color" : {
     "Red Component" : 0.42352941176470588,
     "Color Space" : "sRGB",
@@ -456,11 +456,11 @@
   "Columns" : 80,
   "Visual Bell" : true,
   "ASCII Ligatures" : false,
-  "Custom Directory" : "No",
   "Ansi 5 Color" : {
     "Red Component" : 0.82745098039215681,
     "Color Space" : "sRGB",
     "Blue Component" : 0.50980392156862742,
     "Green Component" : 0.21176470588235294
-  }
+  },
+  "Set Local Environment Vars" : true
 }
